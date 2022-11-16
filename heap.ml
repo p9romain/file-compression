@@ -9,7 +9,9 @@ let is_singleton l =
 
 let is_empty l = (l = [])
 
-let add x l = x :: l
+(* let sort t = List.sort (fun e1 e2 -> compare (snd e1) (snd e2)) t *)
+
+let add x l = x :: l (*sort x :: l*)
 
 let find_min l =
   match l with
@@ -25,6 +27,13 @@ let find_min l =
             aux ll e
     in
     aux ll e
+    
+(* Si liste triée (on doit se mettre d'accord ou non)
+let find_min l =
+  match l with
+  | [] -> failwith "Empty list"
+  | e :: ll -> e
+*)
 
 let remove_min l =
   let min = find_min l in
@@ -40,3 +49,10 @@ let remove_min l =
         aux ll (e :: acc)
   in
   aux l [] 
+
+(* Si liste triée (on doit se mettre d'accord ou non)
+let remove_min l =
+  match l with
+  | [] -> failwith "Empty list"
+  | e :: ll -> (e, ll)
+*)
