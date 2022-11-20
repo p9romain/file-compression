@@ -1,10 +1,13 @@
-type 'a tree =
-| L of 'a
-| N of ('a tree) * ('a tree)
+type elem = int
+type tree =
+| L of elem
+| N of tree * tree
 
 let main () = 
-  let l = [(L("s") , 3) ; (L("i") , 2) ; (L("n") , 1) ; (L("t") , 2) ; (L("a") , 3) ; (L("f") , 1)] in
-  List.iter (fun (s, b) -> Printf.printf "%s : %s\n" s b) (Tree.huff_tab (Tree.huff_tree l)) (*Huffman.decompress "fichier"*)
+  let l = [(16, 3) ; (13, 2) ; (18, 1) ; (62, 2) ; (54, 3) ; (2, 1)] in
+  let t = Tree.huff_tree l in
+  Tree.print_tree t
+  (* List.iter (fun (s, n) -> Printf.printf "%s : %d\n" s n) (Tree.huff_tab (Tree.huff_tree l)) (*Huffman.decompress "fichier"*) *)
 
 
 let () = main ()

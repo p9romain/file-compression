@@ -21,7 +21,7 @@ let find_min l =
       match l with
       | [] -> min
       | e :: ll -> 
-          if snd e > snd min then
+          if snd e >= snd min then
             aux ll min
           else
             aux ll e
@@ -37,18 +37,18 @@ let find_min l =
 
 let remove_min l =
   let min = find_min l in
-  let rec aux l acc =
+  let rec aux l =
     match l with
-    | [] -> (min, acc)
+    | [] -> []
     | e :: ll ->
       (* Comme on suppose les listes pas triées, et que l'on prend le premier minimum,
          alors on regarde la première valeur égale au minimum *)
       if snd e = snd min then
-        aux ll acc
+        ll
       else
-        aux ll (e :: acc)
+        e :: (aux ll)
   in
-  aux l [] 
+  (min, aux l)
 
 (* Si liste triée (on doit se mettre d'accord ou non)
 let remove_min l =

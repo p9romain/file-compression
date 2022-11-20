@@ -1,25 +1,29 @@
-type 'a tree =
-| L of 'a
-| N of ('a tree) * ('a tree)
+type elem = int
 
-(* let val_leaf a =
+type tree =
+| L of elem
+| N of tree * tree
+
+let val_leaf a =
   match a with
-  | N (_) -> failwith "Must be a tree"
+  | N (_) -> failwith "Must be a leaf"
   | L (n) -> n
+
+let print_leaf l = Printf.printf "%d" l
 
 let left_tree a =
   match a with
-  | L (_) -> failwith "Must be a leaf"
+  | L (_) -> failwith "Must be a tree"
   | N ( (a1, a2) ) -> a1
 
 let right_tree a =
   match a with
-  | L (_) -> failwith "Must be a leaf"
-  | N ( (a1, a2) ) -> a2 *)
+  | L (_) -> failwith "Must be a tree"
+  | N ( (a1, a2) ) -> a2
 
-let merge_tree a1 a2 = N( (a1, a2) )
+let merge_tree a1 a2 = N((a1, a2))
 
-let huff_tab a =
+(* let huff_tab a =
   let rec aux a n l =
     match a with
     | L (s) -> (s, n) :: l
@@ -30,16 +34,33 @@ let huff_tab a =
       let l = aux a2 n2 l in 
       l
   in 
-  aux a "" []
+  aux a "" [] *)
 
-let huff_tree l = 
-  let rec aux l = 
+let print_tree t =
+  let rec aux t =
+    match t with
+    | L (l) ->
+      begin
+        print_leaf l;
+        Printf.printf " ";
+      end
+    | N (a1, a2) ->
+      begin
+        Printf.printf "_ ";
+        aux a1;
+        aux a2;
+      end
+  in aux t
+
+let huff_tree l =
+  let rec aux l =
     match l with
     | [] -> failwith "Empty list"
     | (a, n) :: [] -> a
     | _ ->
-      let (a1, n1), ll = Heap.remove_min l in
-      let (a2, n2), l = Heap.remove_min ll in
-      aux (((merge_tree a1 a2), n1+n2) :: l)
+      let (a1, n1), l = Heap.remove_min l in
+      let (a2, n2), l = Heap.remove_min l in
+      let t = merge_tree a1 a2 in
+      aux ((t, n1+n2) :: l)
   in 
-  aux l
+  aux (List.map (fun e -> (L(fst e) , snd e)) l)
