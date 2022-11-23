@@ -1,7 +1,9 @@
-type elem = int
+type elem_hash = (int * int)
+
+type elem_tree = int
 
 type tree =
-| L of elem
+| L of elem_tree
 | N of tree * tree
 
 let val_leaf a =
@@ -23,7 +25,7 @@ let right_tree a =
 
 let merge_tree a1 a2 = N((a1, a2))
 
-(* let huff_tab a =
+let huff_tab a =
   let rec aux a n l =
     match a with
     | L (s) -> (s, n) :: l
@@ -31,12 +33,11 @@ let merge_tree a1 a2 = N((a1, a2))
       let n1 = n ^ "0" in
       let l = aux a1 n1 l in
       let n2 = n ^ "1" in
-      let l = aux a2 n2 l in 
-      l
+      aux a2 n2 l 
   in 
-  aux a "" [] *)
+  aux a "" []
 
-let print_tree t =
+let print t =
   let rec aux t =
     match t with
     | L (l) ->

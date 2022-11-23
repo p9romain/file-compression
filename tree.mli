@@ -1,27 +1,32 @@
-type elem = int
+type elem_hash = (int * int)
+(**docu à faire*)
+
+type elem_tree = int
+(** docu à faire *)
+
 type tree 
 (** docu à faire *)
 
-val val_leaf : tree -> elem
+val val_leaf : tree -> elem_tree
 (** docu à faire *)
 
-val print_leaf : elem -> unit
+val print_leaf : elem_tree -> unit
 (** docu à faire *)
 
-val print_tree : tree -> unit
+val print : tree -> unit
 (** docu à faire *)
 
-val left_tree : elem tree -> elem tree
+val left_tree : tree -> tree
 (** docu à faire *)
 
-val right_tree : elem tree -> elem tree
+val right_tree : tree -> tree
 (** docu à faire *)
 
 val merge_tree : tree -> tree -> tree
 (** docu à faire *)
 
-(* val huff_tab : elem tree -> (string * int) list *)
+val huff_tab : tree -> (int * string) list
 (** docu à faire *)
 
-val huff_tree : (int * int) list -> tree
+val huff_tree : elem_hash list -> tree
 (** docu à faire *)
