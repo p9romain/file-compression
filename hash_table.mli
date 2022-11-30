@@ -1,7 +1,7 @@
-type elem_hash = (int * int)
+type elem_hash
 (**docu à faire*)
 
-type hash = (elem_hash array * (int -> int) * (int -> int))
+type hash
 (**docu à faire*)
 
 val construct : int -> elem_hash -> hash
@@ -14,9 +14,6 @@ val hash_map_2 : int -> int -> int
 (**docu à faire*)
 
 val find : hash -> int -> int * bool
-(**docu à faire*)
-
-val incr : elem_hash array -> int -> unit
 (**docu à faire*)
 
 val list_of_array : elem_hash array -> elem_hash list

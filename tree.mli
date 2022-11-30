@@ -1,7 +1,6 @@
-type elem_hash = (int * int)
-(**docu à faire*)
+open Hash_table
 
-type elem_tree = int
+type elem_tree
 (** docu à faire *)
 
 type tree 

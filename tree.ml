@@ -1,4 +1,4 @@
-type elem_hash = (int * int)
+open Hash_table
 
 type elem_tree = int
 
@@ -53,27 +53,27 @@ let print t =
       end
   in aux t
 
+
 let prefixe_bin a =
-  let rec aux t s =
+  let rec aux t =
     match t with
     | L (l) ->
       let rec dec_to_bin n =
         if n = 0 then
           ""
         else if n mod 2 = 0 then
-          (dec_to_bin (n/2)) ^ "1"
-        else
           (dec_to_bin (n/2)) ^ "0"
+        else
+          (dec_to_bin (n/2)) ^ "1"
       in
       let n = 24 - (int_of_float ((Float.log ((float) l))/.(Float.log 2.) +. 1.)) in
       let s0 = String.make n '0' in
-      s ^ s0 ^ dec_to_bin l
+      s0 ^ dec_to_bin l
     | N (a1, a2) ->
-      let null = String.make 19 '0' ^ "11111" in
-      let s = aux a1 (null ^ s) in
-      aux a2 s
+      let sep = String.make 19 '0' ^ "11111" in
+      sep ^ aux a1 ^ aux a2
   in
-  aux a ""
+  aux a
 
 let huff_tree l =
   let rec aux l =
@@ -86,4 +86,9 @@ let huff_tree l =
       let t = merge_tree a1 a2 in
       aux ((t, n1+n2) :: l)
   in 
-  aux (List.map (fun e -> (L(fst e) , snd e)) l)
+  let aux1 e =
+    match e with
+    | Occ (c, n) -> (L(c), n)
+    | _ -> failwith "WIP"
+  in
+  aux (List.map aux1 l)

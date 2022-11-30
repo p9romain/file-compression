@@ -1,4 +1,4 @@
-type elem_hash = int * int
+type elem_hash = Occ of (int * int) | Code of (int * string)
 
 type hash = elem_hash array * (int -> int) * (int -> int)
 
@@ -20,17 +20,28 @@ let construct n x0 =
 let find (t, h1, h2) x =
   let i = h1 x in
   let rec aux i =
-    if fst (t.(i)) = -1 then
-      (i, false)
-    else if fst (t.(i)) = x then 
-      (i, true)
-    else
-      aux ((i + h2 x) mod (Array.length t))
+    match t.(i) with
+    | Occ (c, _) | Code (c, _) ->
+      if c = -1 then
+        (i, false)
+      else if c = x then 
+        (i, true)
+      else
+        aux ((i + h2 x) mod (Array.length t))
   in aux i
 
-let incr t i = t.(i) <- (fst (t.(i)), 1 + snd (t.(i)))
-
 let list_of_array t =
-  Array.fold_left (fun l e -> if fst e = -1 then l else e :: l) [] t
+  let aux l e =
+    match e with
+    | Occ (c, _) | Code (c, _) ->
+      if c = -1 then l
+      else e :: l
+  in
+  Array.fold_left aux [] t
 
-let print t = Array.iter (fun e -> Printf.printf "%d, occ = %d\n" (fst e) (snd e)) t
+let print t =
+  let aux e =
+    match e with
+    Occ (a,b) -> Printf.printf "%d, occ = %d\n" a b
+    | Code (a,b) -> Printf.printf "%d, code = %s\n" a b
+  in Array.iter aux t

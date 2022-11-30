@@ -1,10 +1,8 @@
-type elem_hash = int * int
-
-type hash = elem_hash array * (int -> int) * (int -> int)
+open Hash_table
 
 let occ_hash s =
   let file = open_in s in
-  let hash = Hash_table.construct 127 (-1, 0) in
+  let hash = Hash_table.construct 127 (Occ ( (-1, 0) )) in
   let t, h1, h2 = hash in
   let rec aux1 file =
     try
@@ -14,9 +12,9 @@ let occ_hash s =
           let utf_c = Uchar.to_int (Uchar.of_char (String.get line i)) in
           let ind, b = Hash_table.find hash utf_c in
           if b then
-            Hash_table.incr t ind
+            t.(ind) <- Occ ((fst (t.(ind)), 1 + snd (t.(ind)))) ;
           else
-            t.(ind) <- (utf_c, 1) ;
+            t.(ind) <- Occ ((utf_c, 1)) ;
           aux2 (i+1) ;
       in 
       aux2 0 ;
@@ -27,4 +25,4 @@ let occ_hash s =
   in
   let () = aux1 file in
   let () = close_in file in
-  hash
+  (t, h1, h2)
