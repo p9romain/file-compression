@@ -16,6 +16,9 @@ val print_leaf : elem_tree -> unit
 val print : tree -> unit
 (** docu à faire *)
 
+val prefixe_bin : tree -> string
+(** docu à faire *)
+
 val left_tree : tree -> tree
 (** docu à faire *)
 

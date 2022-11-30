@@ -1,8 +1,5 @@
 let main () = 
-  let a, h1, h2 = Read_write.occ_hash "italian.txt" in
-  let l = Hash_table.list_of_array a in
-  let tree = Tree.huff_tree l in
-  let l = Tree.huff_tab tree in
-  List.iter (fun e -> Printf.printf "(%d, %s)" (fst e) (snd e)) l
+  let s = Tree.prefixe_bin (Tree.huff_tree [(25,2) ; (120,5) ; (4506,3) ; (1,1) ; (45,5)] ) in
+  Printf.printf "%s" s
   
 let () = main ()
