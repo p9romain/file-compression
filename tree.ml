@@ -1,5 +1,3 @@
-open Hash_table
-
 type elem_tree = int
 
 type tree =
@@ -11,8 +9,6 @@ let val_leaf a =
   | N (_) -> failwith "Must be a leaf"
   | L (n) -> n
 
-let print_leaf l = Printf.printf "%d" l
-
 let left_tree a =
   match a with
   | L (_) -> failwith "Must be a tree"
@@ -23,19 +19,9 @@ let right_tree a =
   | L (_) -> failwith "Must be a tree"
   | N ( (a1, a2) ) -> a2
 
-let merge_tree a1 a2 = N((a1, a2))
+let print_leaf l = Printf.printf "%d" l
 
-let huff_tab a =
-  let rec aux a n l =
-    match a with
-    | L (s) -> (s, n) :: l
-    | N ( (a1, a2) ) ->
-      let n1 = n ^ "0" in
-      let l = aux a1 n1 l in
-      let n2 = n ^ "1" in
-      aux a2 n2 l 
-  in 
-  aux a "" []
+let merge_tree a1 a2 = N((a1, a2))
 
 let print t =
   let rec aux t =
@@ -75,6 +61,18 @@ let prefixe_bin a =
   in
   aux a
 
+let huff_tab a =
+  let rec aux a n l =
+    match a with
+    | L (s) -> (s, n) :: l
+    | N ( (a1, a2) ) ->
+      let n1 = n ^ "0" in
+      let l = aux a1 n1 l in
+      let n2 = n ^ "1" in
+      aux a2 n2 l 
+  in 
+  aux a "" []
+
 let huff_tree l =
   let rec aux l =
     match l with
@@ -88,7 +86,7 @@ let huff_tree l =
   in 
   let aux1 e =
     match e with
-    | Occ (c, n) -> (L(c), n)
-    | _ -> failwith "WIP"
+    | Hash_table.Occ (c, n) -> (L(c), n)
+    | Hash_table.Code _ -> failwith "WIP"
   in
   aux (List.map aux1 l)

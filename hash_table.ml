@@ -1,4 +1,6 @@
-type elem_hash = Occ of (int * int) | Code of (int * string)
+type elem_hash = 
+| Occ of (int * int) 
+| Code of (int * string)
 
 type hash = elem_hash array * (int -> int) * (int -> int)
 
@@ -42,6 +44,6 @@ let list_of_array t =
 let print t =
   let aux e =
     match e with
-    Occ (a,b) -> Printf.printf "%d, occ = %d\n" a b
-    | Code (a,b) -> Printf.printf "%d, code = %s\n" a b
+    Occ (c, n) -> Printf.printf "%d, occ = %d\n" c n
+    | Code (c, s) -> Printf.printf "%d, code = %s\n" c s
   in Array.iter aux t

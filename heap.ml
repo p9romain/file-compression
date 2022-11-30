@@ -1,3 +1,4 @@
+(**
 type 'a t = 'a list
 
 let empty = []
@@ -12,6 +13,7 @@ let is_empty l = (l = [])
 (* let sort t = List.sort (fun e1 e2 -> compare (snd e1) (snd e2)) t *)
 
 let add x l = x :: l (*sort x :: l*)
+*)
 
 let find_min l =
   match l with
@@ -25,15 +27,8 @@ let find_min l =
             aux ll min
           else
             aux ll e
-    in
-    aux ll e
-    
-(* Si liste triée (on doit se mettre d'accord ou non)
-let find_min l =
-  match l with
-  | [] -> failwith "Empty list"
-  | e :: ll -> e
-*)
+  in
+  aux ll e
 
 let remove_min l =
   let min = find_min l in
@@ -49,10 +44,3 @@ let remove_min l =
         e :: (aux ll)
   in
   (min, aux l)
-
-(* Si liste triée (on doit se mettre d'accord ou non)
-let remove_min l =
-  match l with
-  | [] -> failwith "Empty list"
-  | e :: ll -> (e, ll)
-*)
