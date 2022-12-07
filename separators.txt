@@ -1,0 +1,6 @@
+null = 00000000000000000000000000000000
+sep entre utf et huff = 00000000000000000000000000011111
+bourrage au début avec des 0
+
+Lire l'entête 24 par 24 après le premier sep
+Puis dès le null, lire bit par bit

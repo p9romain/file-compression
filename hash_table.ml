@@ -47,3 +47,17 @@ let print t =
     Occ (c, n) -> Printf.printf "%d, occ = %d\n" c n
     | Code (c, s) -> Printf.printf "%d, code = %s\n" c s
   in Array.iter aux t
+
+let char_elem_hash e =
+  match e with
+  Occ (c, _) | Code (c, _) -> c
+
+let occ_elem_hash e =
+  match e with
+  Occ (_, c) -> c
+  | _ -> failwith "Argument must be an element of type Occ"
+
+let code_elem_hash e =
+  match e with
+  Code (_, c) -> c
+  | _ -> failwith "Argument must be an element of type Code"
