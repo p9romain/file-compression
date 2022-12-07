@@ -1,4 +1,7 @@
-let occ_hash file =
+open Tree
+
+let occ_hash s =
+  let file = open_in s in
   let hash = Hash_table.construct 1009 (Hash_table.Occ (-1, 0)) in
   let t, h1, h2 = hash in
   let rec aux1 file =
@@ -21,7 +24,8 @@ let occ_hash file =
   let () = close_in file in
   hash
 
-let file_to_huff_string hash file =
+let file_to_huff_string hash s =
+  let file = open_in s in
   let t, h1, h2 = hash in
   let rec aux file s =
     try
@@ -31,23 +35,69 @@ let file_to_huff_string hash file =
       aux file (s ^ Hash_table.code_elem_hash (t.(ind)));
     with
     | End_of_file -> s
-    | _ -> failwith "Error : how did you do this"
+    | _ -> failwith "Error"
   in
-  aux file ""
+  let s = aux file "" in
+  let () = close_in file in 
+  s
 
 let write file_name s =
   try
+    (*let _ = String.split_on_char '.' file_name in*)
     let file = open_out (file_name ^ ".huff") in
+    let stream = Bs.of_out_channel file in
     let char_to_bit c =
       match c with
       | '0' -> 0
       | '1' -> 1
       | _ -> failwith "Must be a '0' or '1'"
     in
-    let () = String.iter (fun c -> Bs.write_bit (Bs.of_out_channel file) (char_to_bit c)) s in
+    let () = String.iter (fun c -> Bs.write_bit stream (char_to_bit c)) s in
     close_out file
   with
   | Sys_error msg -> failwith msg
   | _ -> ()
 
-let read s = ()
+let header_to_tree channel_in =
+  let stream = Bs.of_in_channel channel_in in
+  let rec aux1 c =
+    if c <> 0 then
+      let n = Bs.read_bit stream in
+      if n = 1 then
+        aux1 (c-1)
+      else
+        aux1 c
+  in
+  let () = aux1 5 in
+  let rec aux2 =
+    let n = Bs.read_n_bits stream 24 in
+    if n <> 0 then
+      if n = 31 then
+        N(aux2, aux2)
+      else 
+        L(n)
+  in
+  N(aux2, aux2)
+
+let trancript_body tree channel_in channel_out =
+  let stream_in = Bs.of_in_channel channel_in in
+  let rec aux t =
+    try
+      match t with
+      | Tree.N (a1, a2) ->
+        begin
+          let b = Bs.read_bit stream_in in
+          if b = 0 then
+            aux a1
+          else
+            aux a2
+        end
+      | Tree.L (n) ->
+        begin
+          let c = Uchar.of_int n in
+          let () = output_char channel_out c in
+          aux tree
+        end
+    with
+    | End_of_file -> ()
+  in aux tree

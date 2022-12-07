@@ -1,7 +1,9 @@
-type elem_tree
+type elem_tree = int
 (** docu à faire *)
 
-type tree 
+type tree =
+| L of elem_tree
+| N of tree * tree
 (** docu à faire *)
 
 val val_leaf : tree -> elem_tree

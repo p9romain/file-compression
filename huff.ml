@@ -1,3 +1,3 @@
-let main () = Huffman.compress "italian.txt"
+let main () = Huffman.decompress "italian.txt.huff"
   
 let () = main ()
