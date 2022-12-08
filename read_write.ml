@@ -1,5 +1,3 @@
-open Tree
-
 let occ_hash s =
   let file = open_in s in
   let hash = Hash_table.construct 1009 (Hash_table.Occ (-1, 0)) in
@@ -59,7 +57,10 @@ let write file_name s =
   | _ -> ()
 
 let header_to_tree channel_in =
+  (* Ouverture du fichier à lire*)
   let stream = Bs.of_in_channel channel_in in
+  (*Pour trouver le bourrage : on lit jusqu'à trouver des 1 car le 
+  caractères de la racine de l'arbre est 00000000000000000000000000011111*)
   let rec aux1 c =
     if c <> 0 then
       let n = Bs.read_bit stream in
@@ -70,14 +71,21 @@ let header_to_tree channel_in =
   in
   let () = aux1 5 in
   let rec aux2 =
+    (* On lit 24 par 24 bits *)
     let n = Bs.read_n_bits stream 24 in
+    (* Caractères null = séparateur entre arbre et texte *)
     if n <> 0 then
+      (* Caractères sép = représente un noeud *)
       if n = 31 then
-        N(aux2, aux2)
+        Tree.N(aux2, aux2)
       else 
-        L(n)
+        Tree.L(n)
+    else
+      (*faut renvoyer quelque chose ici, c'est obligé :
+      comment construire l'arbre alors......*)
   in
-  N(aux2, aux2)
+  (* Création de la racine et construction préfixe *)
+  Tree.N(aux2, aux2)
 
 let trancript_body tree channel_in channel_out =
   let stream_in = Bs.of_in_channel channel_in in

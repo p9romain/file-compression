@@ -1,5 +1,3 @@
-open Hash_table
-
 let decompress s = 
   let channel_in = open_in s in
   let tree = Read_write.header_to_tree channel_in in
@@ -8,6 +6,7 @@ let decompress s =
   let () = close_in channel_in in
   close_out channel_out
 
+(*à changer*)
 let compress s = 
   let hash = Read_write.occ_hash s in
   let a, h1, h2 = hash in
@@ -17,7 +16,7 @@ let compress s =
   let l = Tree.huff_tab tree in
   let modify (n, bin) =
     let ind, _ = Hash_table.find (a, h1, h2) n in
-    a.(ind) <- Code (n, bin)
+    a.(ind) <- Hash_table.Code (n, bin)
   in
   let () = List.iter modify l in
   let s_file = Read_write.file_to_huff_string hash s in
