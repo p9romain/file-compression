@@ -1,6 +1,6 @@
 let occ_hash s =
   let file = open_in s in
-  let hash = Hash_table.construct 1009 (Hash_table.Occ (-1, 0)) in
+  let hash = Hash_table.construct 509 (Hash_table.Occ (-1, 0)) in
   let t, h1, h2 = hash in
   let rec aux1 file =
     try
