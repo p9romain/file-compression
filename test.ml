@@ -21,34 +21,35 @@ let construct_tree () = construct_tree (construct_heap ())
 let test_tree () =
   let tree = construct_tree () in
   Tree.print tree;
-  Printf.printf "\n%s\n" (Tree.prefixe_bin tree)
+  Printf.printf "\n"
 
-let rec dec_to_bin n =
-  if n = 0 then
-    ""
-  else if n mod 2 = 0 then
-    (dec_to_bin (n/2)) ^ "0"
-  else
-    (dec_to_bin (n/2)) ^ "1"
+let test_decode_tree () =
+  let channel_in = open_in "test_text.txt.huff" in
+  let stream_in = Bs.of_in_channel channel_in in
+  let tree = Read_write.header_to_tree stream_in in
+  close_in channel_in;
+  Tree.print tree
 
-let test_dec_to_bin () =
-  Printf.printf "%s\n" (dec_to_bin 116)
+let test_print_compressed () =
+  let channel_in = open_in "test_text.txt.huff" in
+  let stream = Bs.of_in_channel channel_in in
+  let rec aux () =
+    try
+      let b = Bs.read_bit stream in
+      Printf.printf "%d" b;
+      aux ()
+    with
+    Bs.End_of_stream -> ()
+    | Bs.Invalid_stream -> ()
+  in
+  aux ();
+  close_in channel_in;
+  Printf.printf "\n"
 
 let main () =
-  test_heap ();
-  test_dec_to_bin ();
-  test_tree ()
+  (* test_heap (); *)
+  (* test_tree (); *)
+  (* test_print_compressed () *)
+  (* test_decode_tree () *)
 
 let () = main ()
-
-
-(* let () =
-      let print_couple e =
-        let a, b = e in
-        Printf.printf "(";
-        print a;
-        Printf.printf ", %d)" b;
-      in
-      List.iter print_couple l;
-      Printf.printf "\n";
-    in *)

@@ -43,25 +43,24 @@ let print t =
 
 
 let prefixe_bin a =
+  let rec dec_to_bin n =
+    if n = 0 then
+      ""
+    else if n mod 2 = 0 then
+      (dec_to_bin (n/2)) ^ "0"
+    else
+      (dec_to_bin (n/2)) ^ "1"
+  in
   let rec aux t =
     match t with
     | L (l) ->
-      let rec dec_to_bin n =
-        if n = 0 then
-          ""
-        else if n mod 2 = 0 then
-          (dec_to_bin (n/2)) ^ "0"
-        else
-          (dec_to_bin (n/2)) ^ "1"
-      in
-      let n = 24 - (int_of_float ((Float.log ((float) l))/.(Float.log 2.) +. 1.)) in
-      let s0 = String.make n '0' in
-      (dec_to_bin l) ^ s0
+      dec_to_bin l
     | N (a1, a2) ->
-      let sep = "11111" ^ (String.make 19 '0') in
-      sep ^ aux a1 ^ aux a2
+      let char_node = dec_to_bin 31 in
+      let sep = String.make 24 '0' in
+      char_node ^ sep ^ aux a1 ^ sep ^ aux a2
   in
-  aux a
+  aux a ^ (String.make 24 '0')
 
 let huff_tab a =
   let rec aux a n l =

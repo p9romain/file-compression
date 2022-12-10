@@ -1,11 +1,12 @@
 let decompress s = 
   let channel_in = open_in s in
-  let tree = Read_write.header_to_tree channel_in in
-  (*let channel_out = open_out ("new_" ^ s) in
-  let () = Read_write.transcript_body tree channel_in channel_out in
+  let stream_in = Bs.of_in_channel channel_in in
+  let tree = Read_write.header_to_tree stream_in in
+  let channel_out = open_out ("new_" ^ s) in
+  let _ = Bs.read_n_bits stream_in 23 in
+  let () = Read_write.transcript_body tree stream_in channel_out in
   let () = close_in channel_in in
-  close_out channel_out*)
-  Tree.print tree
+  close_out channel_out
 
 (*à changer*)
 let compress s = 
@@ -13,7 +14,6 @@ let compress s =
   let a, h1, h2 = hash in
   let l = Hash_table.list_of_array a in
   let tree = Tree.huff_tree l in
-  let () = Tree.print tree in
   let s_tree = Tree.prefixe_bin tree in
   let l = Tree.huff_tab tree in
   let modify (n, bin) =
@@ -22,8 +22,6 @@ let compress s =
   in
   let () = List.iter modify l in
   let s_file = Read_write.file_to_huff_string hash s in
-  let s_null = String.make 24 '0' in
-  let s_total = s_tree ^ s_null ^ s_file in 
-  let n_bourr = 8 - ((String.length s_total) mod 8) in
-  let bourrage = String.make n_bourr '0' in
-  Read_write.write s (bourrage ^ s_total)
+  let sep_header_body = String.make 24 '1' in
+  let s_total = s_tree ^ sep_header_body ^ s_file in
+  Read_write.write s s_total

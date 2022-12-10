@@ -30,13 +30,13 @@ let file_to_huff_string hash s =
       let c = input_char file in
       let utf_c = Uchar.to_int (Uchar.of_char c) in
       let ind, _ = Hash_table.find hash utf_c in
-      aux file (s ^ Hash_table.code_elem_hash (t.(ind)));
+      aux file (s ^ Hash_table.code_elem_hash (t.(ind)))
     with
     | End_of_file -> s
     | _ -> failwith "Error"
   in
   let s = aux file "" in
-  let () = close_in file in 
+  let () = close_in file in
   s
 
 let write file_name s =
@@ -51,49 +51,70 @@ let write file_name s =
       | _ -> failwith "Must be a '0' or '1'"
     in
     let () = String.iter (fun c -> Bs.write_bit stream (char_to_bit c)) s in
+    Bs.finalize stream;
     close_out file
   with
   | Sys_error msg -> failwith msg
   | _ -> ()
 
-let header_to_tree channel_in =
-  (* Ouverture du fichier à lire*)
-  let stream = Bs.of_in_channel channel_in in
-  (*Pour trouver le bourrage : on lit jusqu'à trouver des 1 car le 
-  caractères de la racine de l'arbre est 11111000000000000000000000000000, le stream est situé juste après ce caractère.*)
-  let rec aux1 () =
-    let n = Bs.read_bit stream in
-    if n = 1 then
-      let _ = Bs.read_n_bits stream 23 in ()
-    else aux1 ()
+let header_to_tree stream =
+  let rec go_until_one i =
+    try
+      if Bs.read_bit stream <> 1 then
+        go_until_one (i+1)
+      else i
+    with
+    | Bs.End_of_stream -> i
+    | Bs.Invalid_stream -> i
   in
-  let () = aux1 () in
+  let _ = go_until_one 0 in
+  let read () =
+    let rec acc b j =
+      if b = 1 then
+        begin
+          let i, n = aux 0 in
+          if i = 0 then
+            (1, 1 + n)
+          else if i > 0 then
+            (2*i, 2*i + n)
+          else
+            (i+1, n)
+        end
+      else
+        begin
+          let i, n = aux (j+1) in
+          if i = 0 then
+            (1, n)
+          else if i > 0 then
+            (2*i, n)
+          else
+            (i+1, n)
+        end
+    and aux j =
+      if j = 24 then
+        begin
+          let t = go_until_one 0 in
+          (t-j, 0)
+        end
+      else
+        let b = Bs.read_bit stream in
+        acc b j
+    in
+    let _, n = acc 1 0 in
+    n
+  in
   let rec aux2 () =
-    (* On lit 24 par 24 bits *)
-    let n = Bs.read_n_bits stream 24 in
+    let n = read () in
     if n = 31 then
-      Tree.N(aux2 (), aux2 ())
+      let t1 = aux2 () in
+      let t2 = aux2 () in
+      Tree.N(t1, t2)
     else 
       Tree.L(n)
-    (* Caractères null = séparateur entre arbre et texte *)
-    (* if n <> 0 then
-      (* Caractères sép = représente un noeud *)
-      if n = 31 then
-        Tree.N(aux2, aux2)
-      else 
-        Tree.L(n)
-    else
-      (*faut renvoyer quelque chose ici, c'est obligé :
-      comment construire l'arbre alors......*) *)
   in
-  (* Création de la racine et construction préfixe *)
-  let t = Tree.N(aux2 (), aux2 ()) in
-  let m = Bs.read_n_bits stream 24 in
-  let () = Printf.printf "Caractere null ? %d\n" m in
-  t
+  aux2 ()
 
-let transcript_body tree channel_in channel_out =
-  let stream_in = Bs.of_in_channel channel_in in
+let transcript_body tree stream_in channel_out =
   let rec aux t =
     try
       match t with
@@ -112,22 +133,6 @@ let transcript_body tree channel_in channel_out =
           aux tree
         end
     with
-    | End_of_file -> ()
+    | Bs.End_of_stream -> ()
+    | Bs.Invalid_stream -> ()
   in aux tree
-
-let test channel_in =
-  let stream = Bs.of_in_channel channel_in in
-  let rec aux1 () =
-    let n = Bs.read_bit stream in
-    if n = 1 then
-      let _ = Bs.read_n_bits stream 23 in ()
-    else aux1 ()
-  in
-  let () = aux1 () in
-  let rec aux2 () =
-    (* On lit 24 par 24 bits *)
-    let n = Bs.read_n_bits stream 24 in
-    Printf.printf "%d " n;
-    if n <> 0 then
-    aux2 ()
-  in aux2 ()

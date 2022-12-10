@@ -1,5 +1,5 @@
 let main () =
-  Huffman.compress "test_text.txt";
-  Huffman.decompress "test_text.txt.huff"
+  Huffman.compress "lorem_ipsum.txt";
+  Huffman.decompress "lorem_ipsum.txt.huff"
   
 let () = main ()
