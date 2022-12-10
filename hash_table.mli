@@ -21,6 +21,9 @@ val find : hash -> int -> int * bool
 val list_of_array : elem_hash array -> elem_hash list
 (**docu à faire*)
 
+val print_elem_hash : elem_hash -> unit
+(**docu à faire*)
+
 val print : elem_hash array -> unit
 (**docu à faire*)
 

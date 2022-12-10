@@ -19,7 +19,9 @@ let right_tree a =
   | L (_) -> failwith "Must be a tree"
   | N ( (a1, a2) ) -> a2
 
-let print_leaf l = Printf.printf "%d" l
+(* let print_leaf l = Printf.printf "%d" l *)
+
+let print_leaf l = Printf.printf "%s" (String.make 1 (Uchar.to_char (Uchar.of_int l)))
 
 let merge_tree a1 a2 = N((a1, a2))
 
@@ -54,9 +56,9 @@ let prefixe_bin a =
       in
       let n = 24 - (int_of_float ((Float.log ((float) l))/.(Float.log 2.) +. 1.)) in
       let s0 = String.make n '0' in
-      s0 ^ dec_to_bin l
+      (dec_to_bin l) ^ s0
     | N (a1, a2) ->
-      let sep = String.make 19 '0' ^ "11111" in
+      let sep = "11111" ^ (String.make 19 '0') in
       sep ^ aux a1 ^ aux a2
   in
   aux a

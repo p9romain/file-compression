@@ -41,11 +41,15 @@ let list_of_array t =
   in
   Array.fold_left aux [] t
 
+let print_elem_hash e =
+  match e with
+  | Occ (c, n) -> Printf.printf "%d, occ = %d" c n
+  | Code (c, s) -> Printf.printf "%d, code = %s" c s
+
 let print t =
   let aux e =
-    match e with
-    Occ (c, n) -> Printf.printf "%d, occ = %d\n" c n
-    | Code (c, s) -> Printf.printf "%d, code = %s\n" c s
+    print_elem_hash e;
+    Printf.printf "\n";
   in Array.iter aux t
 
 let char_elem_hash e =

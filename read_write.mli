@@ -12,3 +12,5 @@ val header_to_tree : in_channel -> Tree.tree
 
 val transcript_body : Tree.tree -> in_channel -> out_channel -> unit
 (**docu à faire*)
+
+val test : in_channel -> unit

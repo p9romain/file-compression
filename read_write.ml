@@ -60,21 +60,23 @@ let header_to_tree channel_in =
   (* Ouverture du fichier à lire*)
   let stream = Bs.of_in_channel channel_in in
   (*Pour trouver le bourrage : on lit jusqu'à trouver des 1 car le 
-  caractères de la racine de l'arbre est 00000000000000000000000000011111*)
-  let rec aux1 c =
-    if c <> 0 then
-      let n = Bs.read_bit stream in
-      if n = 1 then
-        aux1 (c-1)
-      else
-        aux1 c
+  caractères de la racine de l'arbre est 11111000000000000000000000000000, le stream est situé juste après ce caractère.*)
+  let rec aux1 () =
+    let n = Bs.read_bit stream in
+    if n = 1 then
+      let _ = Bs.read_n_bits stream 23 in ()
+    else aux1 ()
   in
-  let () = aux1 5 in
-  let rec aux2 =
+  let () = aux1 () in
+  let rec aux2 () =
     (* On lit 24 par 24 bits *)
     let n = Bs.read_n_bits stream 24 in
+    if n = 31 then
+      Tree.N(aux2 (), aux2 ())
+    else 
+      Tree.L(n)
     (* Caractères null = séparateur entre arbre et texte *)
-    if n <> 0 then
+    (* if n <> 0 then
       (* Caractères sép = représente un noeud *)
       if n = 31 then
         Tree.N(aux2, aux2)
@@ -82,12 +84,15 @@ let header_to_tree channel_in =
         Tree.L(n)
     else
       (*faut renvoyer quelque chose ici, c'est obligé :
-      comment construire l'arbre alors......*)
+      comment construire l'arbre alors......*) *)
   in
   (* Création de la racine et construction préfixe *)
-  Tree.N(aux2, aux2)
+  let t = Tree.N(aux2 (), aux2 ()) in
+  let m = Bs.read_n_bits stream 24 in
+  let () = Printf.printf "Caractere null ? %d\n" m in
+  t
 
-let trancript_body tree channel_in channel_out =
+let transcript_body tree channel_in channel_out =
   let stream_in = Bs.of_in_channel channel_in in
   let rec aux t =
     try
@@ -102,10 +107,27 @@ let trancript_body tree channel_in channel_out =
         end
       | Tree.L (n) ->
         begin
-          let c = Uchar.of_int n in
+          let c = Uchar.to_char (Uchar.of_int n) in
           let () = output_char channel_out c in
           aux tree
         end
     with
     | End_of_file -> ()
   in aux tree
+
+let test channel_in =
+  let stream = Bs.of_in_channel channel_in in
+  let rec aux1 () =
+    let n = Bs.read_bit stream in
+    if n = 1 then
+      let _ = Bs.read_n_bits stream 23 in ()
+    else aux1 ()
+  in
+  let () = aux1 () in
+  let rec aux2 () =
+    (* On lit 24 par 24 bits *)
+    let n = Bs.read_n_bits stream 24 in
+    Printf.printf "%d " n;
+    if n <> 0 then
+    aux2 ()
+  in aux2 ()
