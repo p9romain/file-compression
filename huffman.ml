@@ -2,6 +2,7 @@ let decompress s =
   let channel_in = open_in s in
   let stream_in = Bs.of_in_channel channel_in in
   let tree = Read_write.header_to_tree stream_in in
+  let s = (List.hd (String.split_on_char '.' s)) ^ ".txt" in
   let channel_out = open_out ("new_" ^ s) in
   let _ = Bs.read_n_bits stream_in 23 in
   let () = Read_write.transcript_body tree stream_in channel_out in

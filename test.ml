@@ -24,14 +24,14 @@ let test_tree () =
   Printf.printf "\n"
 
 let test_decode_tree () =
-  let channel_in = open_in "test_text.txt.huff" in
+  let channel_in = open_in "test_text.huff" in
   let stream_in = Bs.of_in_channel channel_in in
   let tree = Read_write.header_to_tree stream_in in
   close_in channel_in;
   Tree.print tree
 
 let test_print_compressed () =
-  let channel_in = open_in "test_text.txt.huff" in
+  let channel_in = open_in "test_text.huff" in
   let stream = Bs.of_in_channel channel_in in
   let rec aux () =
     try
