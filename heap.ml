@@ -85,7 +85,7 @@ let remove_min l =
     | e :: ll ->
       (* Comme on suppose les listes pas triées, et que l'on prend le premier minimum,
          alors on regarde la première valeur égale au minimum *)
-      if snd e = snd min then
+      if snd e = snd min then (* On compare les occurences *)
         ll
       else
         e :: (aux ll)

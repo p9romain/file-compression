@@ -26,10 +26,15 @@ val find_min : heap -> 'a
     the generic comparison [<] *)
 *)
 
+
+(* A voir si on change toujours pour un tas ou pas (je pense pas) *)
+
+
+
 val find_min : ('a * 'b) list -> ('a * 'b)
-(** [find_min h] returns the smallest elements of [h] w.r.t to 
+(** [find_min l] returns the smallest elements of [l] w.r.t to 
     the generic comparison [<] *)
 
 val remove_min : ('a * 'b) list -> ('a * 'b) * ('a * 'b) list
-(** [remove_min h] returns the pair of the smallest elements of [h] w.r.t to 
-    the generic comparison [<] and [h] where that element has been removed. *)
+(** [remove_min l] returns the pair of the smallest elements of [l] w.r.t to 
+    the generic comparison [<] and [l] where that element has been removed. *)

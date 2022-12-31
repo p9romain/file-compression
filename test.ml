@@ -46,7 +46,7 @@ let test_print_compressed () =
   close_in channel_in;
   Printf.printf "\n"
 
-let main () =
+let main () = ()
   (* test_heap (); *)
   (* test_tree (); *)
   (* test_print_compressed () *)

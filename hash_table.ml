@@ -19,49 +19,49 @@ let construct n x0 =
   let hash2 = hash_map_2 (Random.int n) in
   (Array.create n x0, hash1, hash2)
 
-let find (t, h1, h2) x =
+let find (a, h1, h2) x =
   let i = h1 x in
   let rec aux i =
-    match t.(i) with
+    match a.(i) with
     | Occ (c, _) | Code (c, _) ->
       if c = -1 then
         (i, false)
       else if c = x then 
         (i, true)
       else
-        aux ((i + h2 x) mod (Array.length t))
+        aux ((i + h2 x) mod (Array.length a))
   in aux i
 
-let list_of_array t =
+let list_of_array a =
   let aux l e =
     match e with
     | Occ (c, _) | Code (c, _) ->
       if c = -1 then l
       else e :: l
   in
-  Array.fold_left aux [] t
+  Array.fold_left aux [] a
 
 let print_elem_hash e =
   match e with
   | Occ (c, n) -> Printf.printf "%d, occ = %d" c n
   | Code (c, s) -> Printf.printf "%d, code = %s" c s
 
-let print t =
+let print a =
   let aux e =
     print_elem_hash e;
     Printf.printf "\n";
-  in Array.iter aux t
+  in Array.iter aux a
 
 let char_elem_hash e =
   match e with
-  Occ (c, _) | Code (c, _) -> c
+  | Occ (c, _) | Code (c, _) -> c
 
 let occ_elem_hash e =
   match e with
-  Occ (_, c) -> c
+  | Occ (_, c) -> c
   | _ -> failwith "Argument must be an element of type Occ"
 
 let code_elem_hash e =
   match e with
-  Code (_, c) -> c
+  | Code (_, c) -> c
   | _ -> failwith "Argument must be an element of type Code"
