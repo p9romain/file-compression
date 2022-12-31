@@ -43,7 +43,7 @@ let write file_name s =
   try
     let l = String.split_on_char '.' file_name in
     let file_name = List.hd l in
-    let file = open_out (file_name ^ ".huff") in
+    let file = open_out ("compressed_files/" ^ file_name ^ ".hf") in
     let stream = Bs.of_out_channel file in
     let char_to_bit c =
       match c with
@@ -69,6 +69,7 @@ let header_to_tree stream =
     | Bs.Invalid_stream -> i
   in
   let _ = go_until_one 0 in
+  (*Besoin de commentaire : je comprends pas*)
   let read () =
     let rec acc b j =
       if b = 1 then
