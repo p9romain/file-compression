@@ -31,8 +31,8 @@ val prefixe_bin : tree -> string
 
 TODO : tu as changé la syntaxe de l'arbre avec les séparateurs et tout du coup je suis perdu : faudra voir ça ensemble*)
 
-val huff_tab : tree -> (int * string) list
-(** [huff_tab t] returns the list of pairs with the utf8-code and the Huffman code *)
+val huff_tree_to_list : tree -> (int * string) list
+(** [huff_tree_to_list t] returns the list of pairs with the utf8-code and the Huffman code *)
 
-val huff_tree : Hash_table.elem_hash list -> tree
-(** [huff_tree l] returns the tree for Huffman algorithm *)
+val huff_heap_to_tree : (tree * int) Heap.heap -> tree
+(** [huff_heap_to_tree l] returns the tree for Huffman algorithm *)

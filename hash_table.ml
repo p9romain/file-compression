@@ -32,14 +32,17 @@ let find (a, h1, h2) x =
         aux ((i + h2 x) mod (Array.length a))
   in aux i
 
-let list_of_array a =
-  let aux l e =
+let to_heap hash =
+  let a, h1, h2 = hash in
+  let heap = Heap.empty (Tree.L(0), 0) (fun x y -> compare (snd x) (snd y)) in
+  let aux h e =
     match e with
-    | Occ (c, _) | Code (c, _) ->
-      if c = -1 then l
-      else e :: l
+    | Code _ -> failwith "Must be a list of Hash_table.Code, not Hash_table.Occ."
+    | Occ (c, n) ->
+      if c = -1 then h
+      else Heap.add h (Tree.L(c), n)
   in
-  Array.fold_left aux [] a
+  Array.fold_left aux heap a
 
 let print_elem_hash e =
   match e with

@@ -23,7 +23,10 @@ let right_tree t =
 
 let print_leaf l = Printf.printf "%d" l *)
 
-let print_leaf l = Printf.printf "%s" (String.make 1 (Uchar.to_char (Uchar.of_int l)))
+(* let print_leaf l = Printf.printf "%s" (String.make 1 (Uchar.to_char (Uchar.of_int l)))
+ *)
+
+let print_leaf l = Printf.printf "%d" l
 
 let merge_tree t1 t2 = N((t1, t2))
 
@@ -64,9 +67,9 @@ let prefixe_bin t =
   in
   aux t ^ (String.make 24 '0')
 
-let huff_tab t =
+let huff_tree_to_list t =
   let rec aux t n l =
-    match a with
+    match t with
     | L (s) -> (s, n) :: l
     | N ( (t1, t2) ) ->
       let n1 = n ^ "0" in
@@ -76,20 +79,32 @@ let huff_tab t =
   in 
   aux t "" []
 
-let huff_tree l =
-  let rec aux l =
-    match l with
-    | [] -> failwith "Empty list"
-    | (t, n) :: [] -> t
-    | _ ->
-      let (t1, n1), l = Heap.remove_min l in
-      let (t2, n2), l = Heap.remove_min l in
+let huff_heap_to_tree h =
+  let rec aux h =
+    if Heap.is_empty h then
+      failwith "Empty heap"
+    else if Heap.is_singleton h then
+      Heap.find_min h
+    else
+      let (t1, n1), h = Heap.remove_min h in
+      let (t2, n2), h = Heap.remove_min h in
       let t = merge_tree t1 t2 in
-      aux ((t, n1+n2) :: l)
-  in 
-  let aux1 e =
-    match e with
-    | Hash_table.Occ (c, n) -> (L(c), n)
-    | Hash_table.Code _ -> failwith "Must be a list of Hash_table.Code, not Hash_table.Occ."
+      let h = Heap.add h (t, n1+n2) in
+      aux h
   in
-  aux (List.map aux1 l)
+  let t, _ = aux h in
+  t
+
+(* 
+  let print_heap h =
+    let print_elem_heap e =
+      Printf.printf "( " ;
+      print (fst e) ;
+      Printf.printf " , " ;
+      Printf.printf "%d ) | " (snd e)
+    in
+    Printf.printf "| " ;
+    Heap.print h print_elem_heap ;
+    Printf.printf "\n\n"
+  in
+ *)

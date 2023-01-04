@@ -18,8 +18,8 @@ val construct : int -> elem_hash -> hash
 val find : hash -> int -> int * bool
 (** [find (a, h1, h2) x] returns the pair of the index of the element [x] in the array [a] and [true] if [a] contains [x]. The boolean is useful to know if we need to add [x] or not. *)
 
-val list_of_array : elem_hash array -> elem_hash list
-(** [list_of_array a] returns a list of all the elements of [a], except the "holes" *)
+val to_heap : hash -> (Tree.tree * int) Heap.heap
+(** [to_heap a] returns a list of all the elements of [a], except the "holes" *)
 
 val print_elem_hash : elem_hash -> unit
 (** [print_elem_hash e] prints [e] *)

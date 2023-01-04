@@ -41,9 +41,7 @@ let file_to_huff_string hash s =
 
 let write file_name s =
   try
-    let l = String.split_on_char '.' file_name in
-    let file_name = List.hd l in
-    let file = open_out ("compressed_files/" ^ file_name ^ ".hf") in
+    let file = open_out (file_name ^ ".hf") in
     let stream = Bs.of_out_channel file in
     let char_to_bit c =
       match c with
