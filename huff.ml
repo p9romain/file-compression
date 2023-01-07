@@ -10,20 +10,51 @@ let main () =
       if Array.length Sys.argv = 2 then
         Printf.printf "\n    You haven't given any files.\n    Have you tried './huff.exe --help' ?\n\n"
       else
-        Huffman.compress Sys.argv.(2)
+        let rec aux i =
+          if i <> Array.length Sys.argv then
+            begin
+              Huffman.compress Sys.argv.(i);
+              aux (i+1)
+            end
+        in aux 2
 
     else if Sys.argv.(1) = "--decompress" || Sys.argv.(1) = "-d" then
       if Array.length Sys.argv = 2 then
         Printf.printf "\n    You haven't given any files.\n    Have you tried './huff.exe --help' ?\n\n"
       else
-        Huffman.decompress Sys.argv.(2)
+        let rec aux i =
+          if i <> Array.length Sys.argv then
+            begin
+              Huffman.decompress Sys.argv.(i);
+              aux (i+1)
+            end
+        in aux 2
 
     else if Sys.argv.(1) = "--stats" || Sys.argv.(1) = "-s" then
       if Array.length Sys.argv = 2 then
         Printf.printf "\n    You haven't given any files.\n    Have you tried './huff.exe --help' ?\n\n"
       else
-        Huffman.compress Sys.argv.(2)
-        (* TODO : les stats *)
+        let rec aux i =
+          if i <> Array.length Sys.argv then
+            begin
+              let getFileSize filename =
+                let ic = open_in filename in
+                let res = in_channel_length ic in
+                let () = close_in ic in
+                res
+              in
+              let printFileSize size =
+                Printf.printf "%d\n" size
+              in
+              let size_before = getFileSize Sys.argv.(i) in
+              let () = Huffman.compress Sys.argv.(i) in
+              let size_after = getFileSize (Sys.argv.(i) ^ ".hf") in
+              printFileSize size_before;
+              printFileSize size_after;
+              Printf.printf "%f\n" (1.-.(float size_after)/.(float size_before));
+              aux (i+1)
+            end
+        in aux 2
 
     else
       Printf.printf "\n    Your option isn't considered by this program.\n    Here's the help message :\n\n\n%s\n\n" help
