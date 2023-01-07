@@ -1,4 +1,4 @@
-(* let construct_heap () =
+let construct_heap () =
   let hash = Read_write.occ_hash "test_text.txt" in
   let a, h1, h2 = hash in
   let heap = Hash_table.list_of_array a in
@@ -45,11 +45,11 @@ let test_print_compressed () =
   aux ();
   close_in channel_in;
   Printf.printf "\n"
- *)
+
 let main () = ()
-  (* test_heap (); *)
-  (* test_tree (); *)
-  (* test_print_compressed () *)
-  (* test_decode_tree () *)
+  test_heap ();
+  test_tree ();
+  test_print_compressed ()
+  test_decode_tree ()
 
 let () = main ()

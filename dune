@@ -1,4 +1,4 @@
 (executables 
- (names huff heap_test)
+ (names huff heap_test test)
  (promote (until-clean))
 )
