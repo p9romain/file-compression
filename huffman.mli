@@ -1,5 +1,5 @@
 val decompress : string -> unit
-(** docu à faire *)
+(** [decompresss s] takes a [s = "name.ext.hf"] file and decompresses it into a "new_name.ext" file*)
 
 val compress : string -> unit
-(** docu à faire *)
+(** [compresss s] take a [s = "name.ext"] file and compresses it into a "name.ext.hf" file using Huffman algorithm*)
