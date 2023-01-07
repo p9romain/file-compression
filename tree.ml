@@ -59,13 +59,14 @@ let prefixe_bin t =
   let rec aux t =
     match t with
     | L (l) ->
-      dec_to_bin l
+      let s = dec_to_bin l in
+      let n = 24 - String.length s in
+      (String.make n '0') ^ s
     | N (t1, t2) ->
-      let char_node = dec_to_bin 31 in
-      let sep = String.make 24 '0' in
-      char_node ^ sep ^ aux t1 ^ sep ^ aux t2
+      let char_node = (String.make 19 '0') ^ (String.make 5 '1') in
+      char_node ^ aux t1 ^ aux t2
   in
-  aux t ^ (String.make 24 '0')
+  aux t
 
 let huff_tree_to_list t =
   let rec aux t n l =

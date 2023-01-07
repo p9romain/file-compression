@@ -57,62 +57,37 @@ let write file_name s =
   | _ -> ()
 
 let header_to_tree stream =
-  let rec go_until_one i =
-    try
-      if Bs.read_bit stream <> 1 then
-        go_until_one (i+1)
-      else i
-    with
-    | Bs.End_of_stream -> i
-    | Bs.Invalid_stream -> i
-  in
-  let _ = go_until_one 0 in
-  (*Besoin de commentaire : je comprends pas*)
-  let read () =
-    let rec acc b j =
-      if b = 1 then
-        begin
-          let i, n = aux 0 in
-          if i = 0 then
-            (1, 1 + n)
-          else if i > 0 then
-            (2*i, 2*i + n)
+  try
+    let rec aux () =
+      let rec aux1 acc i =
+        if i = 24 then
+          acc
+        else
+          let b = Bs.read_bit stream in
+          if b = 0 && acc = [] then
+            aux1 acc (i+1)
           else
-            (i+1, n)
-        end
-      else
-        begin
-          let i, n = aux (j+1) in
-          if i = 0 then
-            (1, n)
-          else if i > 0 then
-            (2*i, n)
-          else
-            (i+1, n)
-        end
-    and aux j =
-      if j = 24 then
-        begin
-          let t = go_until_one 0 in
-          (t-j, 0)
-        end
-      else
-        let b = Bs.read_bit stream in
-        acc b j
+            aux1 (b :: acc) (i+1)
+      in
+      let l = aux1 [] 0 in
+      let rec aux2 l =
+        match l with
+        | [] -> 0
+        | e :: ll ->
+           e + 2 * (aux2 ll)
+      in
+      let n = aux2 l in
+      if n = 31 then
+        let t1 = aux () in
+        let t2 = aux () in
+        Tree.N(t1, t2)
+      else 
+        Tree.L(n)
     in
-    let _, n = acc 1 0 in
-    n
-  in
-  let rec aux2 () =
-    let n = read () in
-    if n = 31 then
-      let t1 = aux2 () in
-      let t2 = aux2 () in
-      Tree.N(t1, t2)
-    else 
-      Tree.L(n)
-  in
-  aux2 ()
+    aux ()
+  with
+  | Bs.End_of_stream -> failwith "Impossible error"
+  | Bs.Invalid_stream -> failwith "Impossible error"
 
 let transcript_body tree stream_in channel_out =
   let rec aux t =

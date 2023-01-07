@@ -36,24 +36,18 @@ let main () =
       else
         let rec aux i =
           if i <> Array.length Sys.argv then
-            begin
-              let getFileSize filename =
-                let ic = open_in filename in
-                let res = in_channel_length ic in
-                let () = close_in ic in
-                res
-              in
-              let printFileSize size =
-                Printf.printf "%d\n" size
-              in
-              let size_before = getFileSize Sys.argv.(i) in
-              let () = Huffman.compress Sys.argv.(i) in
-              let size_after = getFileSize (Sys.argv.(i) ^ ".hf") in
-              printFileSize size_before;
-              printFileSize size_after;
-              Printf.printf "%f\n" (1.-.(float size_after)/.(float size_before));
-              aux (i+1)
-            end
+            let getFileSize filename =
+              let ic = open_in filename in
+              let res = in_channel_length ic in
+              let () = Printf.printf "%s : %d o\n" filename res in
+              let () = close_in ic in
+              res
+            in
+            let size_before = getFileSize Sys.argv.(i) in
+            let () = Huffman.compress Sys.argv.(i) in
+            let size_after = getFileSize (Sys.argv.(i) ^ ".hf") in
+            let () = Printf.printf "Compression rate : %f%%\n\n" (100.*.(1.-.(float size_after)/.(float size_before))) in
+            aux (i+1)
         in aux 2
 
     else
