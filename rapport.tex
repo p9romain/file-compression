@@ -1,0 +1,65 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+
+
+\geometry{
+  a4paper,
+  left=20mm,
+  top=20mm,
+  bottom=20mm,
+  right=20mm
+}
+\author{}
+\date{}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcopyright \hspace*{0.5em} 2022-2023}
+\rhead{PERROD Romain et BOHÈRE Matthieu}
+\rfoot{Page \thepage}
+
+\title{Rapport Projet IPF}
+
+\allowdisplaybreaks
+
+\begin{document}
+  \maketitle\thispagestyle{fancy}
+
+  Le projet traite de la compression/décompression de fichier texte via l'algorithme de Huffman. \\
+  Nous avons décidé d'utiliser le code UTF-8 des caractères au-lieu du ASCII pour pouvoir prendre en compte plus de caractère.
+
+  \section*{Compression}
+  Premièrement, on récupère la fréquence des lettres du texte et on l'inscrit dans une table de hachage car l'écriture a un coût constant. Nous avons entièrement construit un type \texttt{hash}, nous avons choisit la technique de double hachage. Les entrées de la table sont un type somme~: \texttt{Occ of (int * int)} pour représenter \texttt{(code UTF-8 d'un caractère, nombre d'occurence)} ou \texttt{Code of (int * string)} pour représenter \texttt{(code UTF-8 d'un caractère, code huffman)}. \\ \\
+  Secondement, nous avons transformé la table de hachage en tas. Nous avons donc défini un type \texttt{heap} représenté sous forme de tableau comme un produit nommé \texttt{{ length : int ; tab : 'a array ; comp : ('a -> 'a -> int) }} où l'on a spécifié la fonction de comparaison entre éléments. \\ \\
+  A partir de cela, c'était plus facile de construit l'arbre Huffman. De plus, nous avons du définir un nouveau type \texttt{tree} comme somme d'une feuille \texttt{L of int} et d'un noeud \texttt{N of (tree * tree)}. Ici, les feuilles contiennent les codes UTF-8 des caractères du texte. \\ \\
+  Après l'arbre construit, nous avons crée une liste de \texttt{Code} obtenu en lisant l'arbre. Et, nous avons remplacé les champs de la table, toujours de type \texttt{Occ} par le type \texttt{Code}. Cest pour cela que l'on a opté pour un type somme dans les champs de la table~: cela permet de ne pas recréer une table. \\ \\
+  Enfin, nous avons écrit dans le nouveau fichier de compression~: l'arbre Huffman en préfixe sous forme de bloc de 24 bits (le code du caractère en binaire et un bourrage de zéros avant) et pour les noeuds internes il s'agit du code 31. Puis, on écrit le texte compressé où chaque caractère est remplacé par son code Huffman.
+
+  \section*{Décompression}
+  Tout d'abord, on lit le début du fichier \texttt{.hf} et on construit l'arbre Huffman. Lorsque l'arbre est correctement construit, la lecture s'arrête juste avant le corps du texte car cela découle de l'écriture préfixe. \\ \\
+  Après, on utilise l'arbre pour décripter chaque caractère et l'on écrit en simultanée dans le fichier décompressé.
+
+  \section*{Jeux de tests}
+  \subsection*{Heap}
+  Nous avons eu à tester la structure \texttt{heap}~: les fonctions d'ajout, de récupération du min et de sa sortie... \\
+  \subsection*{Arbre Huffman}
+  Nous avons aussi construit l'arbre Huffman sur un petit exemple (le texte \texttt{satisfaisant}).
+  \subsection*{Table de Hachage}
+
+  \section*{Répartition du travail}
+  Au début, pendant les séances de TP, nous travaillions ensemble sur un même ordinateur ce qui nous permettait de mettre en commun nos idées. De plus, nous avions choisi de commencer par la table de hachage et l'arbre avant de récupérer les lettres du texte. Après cela, nous avons réalisé les fonctions de compression. \\ \\
+  Lorsque les séances de TP se sont arrêtées, Romain a crée la structure de tas, écrit les documentations et les commandes du fichier \texttt{huff.exe}. Matthieu a écrit la fonction de décompression, les tests et l'implémentation du tas dans nos fonctions.
+
+  \section*{Exemple d'une fonction}
+  Nous avons choisi la fonction \texttt{Read\_write.header\_to\_tree}. \\
+  Il s'agit de la fonction qui reconstruit l'arbre stocké au début du fichier compressé, en écriture préfixe. \\
+  La fonction \texttt{aux} lit sur le stream et construit l'arbre. Elle est ainsi appelée pour les deux sous-arbres. \\
+  La fonction \texttt{aux1} permet de lire chacun des caractères du préfixe, en lisant 24 bits à la fois et stocke les chiffres significatifs du code binaire dans une liste par ordre croissant de poids. Par exemple, le bloc \texttt{000000000000000000011010} donnera \texttt{[0;1;0;1;1]}. \\
+  La fonction \texttt{aux2} traduit cette écriture binaire en décimal. Ici, \texttt{[0;1;0;1;1]} donne \texttt{26}. \\
+  Si cet entier vaut \texttt{31}, cela signifie que c'est un noeud interne, on appelle alors deux fois \texttt{aux} et l'on construit l'arbre à partir de ces deux renvois. \\
+  Sinon, c'est une feuille, on renvoie la feuille avec comme valeur l'entier.
+
+\end{document}

@@ -13,6 +13,8 @@ let main () =
   print h ;
   let min, h = Heap.remove_min h in
   Printf.printf "min = %d && " min ;
-  print h
+  print h ;
+  Heap.add h 4 ;
+  print h 
 
 let () = main ()
