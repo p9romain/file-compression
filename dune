@@ -1,4 +1,4 @@
 (executables 
- (names huff heap_test test)
+ (names huff heap_test tree_test hash_table_test test)
  (promote (until-clean))
 )

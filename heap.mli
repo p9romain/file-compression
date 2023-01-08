@@ -25,4 +25,4 @@ val remove_min : 'a heap -> 'a * 'a heap
     the generic comparison [<] and [h] where that element has been removed. *)
 
 val print : 'a heap -> ('a -> unit) -> unit
-(** [print] print heap in the right order of tab applying a print function to each element *)
+(** [print heap f] print [heap] in the right order of tab applying a print function [f] to each element *)

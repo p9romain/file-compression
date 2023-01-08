@@ -27,9 +27,7 @@ val print : tree -> unit
 (** [print t] prints [t] *)
 
 val prefixe_bin : tree -> string
-(** [prefixe_bin t] returns a string of the tree with prefix reading : the node are the string.. 
-
-TODO : tu as changé la syntaxe de l'arbre avec les séparateurs et tout du coup je suis perdu : faudra voir ça ensemble*)
+(** [prefixe_bin t] returns a string of the tree with prefix reading : nodes are the string "000000000000000000011111" and leaves are utf8-code as an int *)
 
 val huff_tree_to_list : tree -> (int * string) list
 (** [huff_tree_to_list t] returns the list of pairs with the utf8-code and the Huffman code *)
