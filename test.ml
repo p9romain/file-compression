@@ -24,7 +24,7 @@ let test_tree () =
   Printf.printf "\n"
 
 let test_decode_tree () =
-  let channel_in = open_in "test_text.huff" in
+  let channel_in = open_in "text_files/test_text.huff" in
   let stream_in = Bs.of_in_channel channel_in in
   let tree = Read_write.header_to_tree stream_in in
   close_in channel_in;
@@ -46,7 +46,7 @@ let test_print_compressed () =
   close_in channel_in;
   Printf.printf "\n"
 
-let main () = ()
+let main () =
   test_heap ();
   test_tree ();
   test_print_compressed ()
