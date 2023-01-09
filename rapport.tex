@@ -4,6 +4,9 @@
 \usepackage[french]{babel}
 \usepackage{geometry}
 \usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{trees}
 
 
 \geometry{
@@ -44,10 +47,93 @@
 
   \section*{Jeux de tests}
   \subsection*{Heap}
-  Nous avons eu à tester la structure \texttt{heap}~: les fonctions d'ajout, de récupération du min et de sa sortie... \\
-  \subsection*{Arbre Huffman}
-  Nous avons aussi construit l'arbre Huffman sur un petit exemple (le texte \texttt{satisfaisant}).
+  Pour exécuter le fichier de test, il faut lancer la commande \texttt{./heap\_test.exe} \\
+  Ce fichier teste la structure \texttt{heap}~: les fonctions d'ajout d'un élément, de récupération du minimum et de sa sortie. \\
+  En effet, le fichier test transforme la liste \texttt{[1 ; 5 ; 3 ; 11 ; 4]} en un tas, soit \texttt{ | 1 | 4 | 3 | 11 | 5 | } en ajoutant petit à petit chaque élément (il n'existe pas un tas unique, tout dépend de l'ordre qu'on insère les éléments~: tant que le père d'une valeur est plus petite qu'elle-même.), et c'est effectivement ce qu'on obtient. \\
+  Ensuite, on demande le minimum du tas (soit le premier élément), et on le retire et on vérifie que l'on obtient encore un tas~: on obtient \texttt{ | 3 | 4 | 5 | 11 | } qui est un tas (on peut redessiner facilement l'arbre associé pour vérifier). \\
+  Pour finir, nous ajoutons $6$ dans le tas et on revérifie~: on obtient \texttt{ | 3 | 4 | 5 | 11 | 6 | } qui est un tas.
+
+  \subsection*{Arbre}
+  Pour exécuter le fichier de test, il faut lancer la commande \texttt{./tree\_test.exe} \\
+  Ce fichier teste la structure \texttt{tree}~: la construction de l'arbre et les fonctions d'affichage. \\
+  En effet, on construit un arbre donc voici sa représention~:
+  \begin{center} 
+    \begin{tikzpicture}[level distance=1.5cm, level 1/.style={sibling distance=4cm}, level 2/.style={sibling distance=2cm}, level 3/.style={sibling distance=1cm}, level 4/.style={sibling distance=0.5cm}]
+      \node {}
+        child {node {}
+          child {node {}
+            child {node {}
+              child {node {$1$}}
+              child {node {$4$}}
+            }
+            child {node {$23$}}
+          }
+          child {node {}
+            child {node {$12$}}
+            child {node {$1$}}
+          }
+        }
+        child {node {}
+          child {node {$6$}}
+          child {node {}
+            child {node {$2$}}
+            child {node {$5$}}
+          }
+        };
+    \end{tikzpicture}
+  \end{center}
+  Si nous lisons cet arbre en préfixe, avec des underscores $\_$ pour représenter les noeuds internes, nous obtenons \texttt{\_ \_ \_ \_ 1 4 23 \_ 12 1 \_ 6 \_ 2 5}~: c'est bien ce qu'affiche la fonction print. \\
+  De plus, si nous fusionons cet arbre avec une queue de cerise de $-1$, nous obtenons~:
+  \begin{center} 
+    \begin{tikzpicture}[level distance=1.5cm, level 1/.style={sibling distance=6cm}, level 2/.style={sibling distance=4cm}, level 3/.style={sibling distance=2cm}, level 4/.style={sibling distance=1cm}, level 5/.style={sibling distance=0.5cm}]
+      \node {}
+        child {node {}
+          child {node {}
+            child {node {}
+              child {node {}
+                child {node {$1$}}
+                child {node {$4$}}
+              }
+              child {node {$23$}}
+            }
+            child {node {}
+              child {node {$12$}}
+              child {node {$1$}}
+            }
+          }
+          child {node {}
+            child {node {$6$}}
+            child {node {}
+              child {node {$2$}}
+              child {node {$5$}}
+            }
+          }
+        }
+        child {node {}
+          child {node {$-1$}}
+          child {node {$-1$}}
+        };
+    \end{tikzpicture}
+  \end{center}
+  soit \texttt{\_ \_ \_ \_ \_ 1 4 23 \_ 12 1 \_ 6 \_ 2 5 \_ -1 -1} en préfixe~: c'est bien ce que nous obtenons.
+
   \subsection*{Table de Hachage}
+  Pour exécuter le fichier de test, il faut lancer la commande \texttt{./hash\_table\_test.exe} \\
+  Ce fichier teste la structure \texttt{tree}~: la construction du tas, la recherche d'un élément, ainsi que l'ajout et la modification d'un élément. \\
+  Dans ce cas, nous allons utiliser le type \texttt{Occ} comme élément, mais cela fonctionnerait tout autant avec \texttt{Code}. \\
+  Tout d'abord, on transforme la liste \texttt{[ Occ(25, 2) ; Occ(1263, 5) ; Occ(24, 263) ; Occ(152, 1) ; Occ(254, 24) ]} en une table de hachage. Puisque c'est une table de hachage, nous ne pouvons pas vraiment prédire l'ordre des éléments, à part calculer un par un toutes les valeurs de hachages, mais nous nous attendons à avoir toutes les valeurs de la liste dedans : ce qui est le cas, en sachant que le double hachage gère les conflits. \\
+  De plus, nous testons si la valeur $152$ et $12$ sont dedans~: en effet, le fonction qui cherche un élément renvoie l'indice de l'élément dont la première composante est la valeur, plus un booléen indiquant s'il est dedans, et donc pour $152$ et $12$, on est censé obtenir vrai et faux, et c'est bien le cas. Pour aussi vérifier que l'on peut changer la valeur, nous ajoutons l'élément \texttt{Occ(12, 1)} et nous modifions l'élément ayant comme valeur $152$~: là aussi, tout fonctionne.
+
+  \subsection*{Fichier contenant \og satisfaisant \fg{}}
+  Pour exécuter le fichier de test, il faut lancer la commande \texttt{./test.exe} \\
+  Ce fichier tester tout l'algorithme du programme sur un petit texte contenant le mot \og satisfaisant \fg{}. Il n'utilise pas les fonctions \texttt{compress} et \texttt{decompress}, mais décortique petit à petit le process~:
+  \begin{itemize}
+    \item[-] On compte la fréquence de chaque lettre dans une table de hachage qu'on convertit en tas et on affiche les valeurs ;
+    \item[-] On traduit ce tas en un arbre de Huffman ;
+    \item[-] On compresse le fichier en y stockant l'arbre puis le texte compressé ;
+    \item[-] On décompress seulement l'arbre pour vérifier qu'il est identique à l'arbre construit plus tôt ;
+  \end{itemize}
+  Ainsi, tout fonctionne et on obtient bien tout ce que l'on souhaitait, y compris obtenir les deux arbres à l'identique.
 
   \section*{Répartition du travail}
   Au début, pendant les séances de TP, nous travaillions ensemble sur un même ordinateur ce qui nous permettait de mettre en commun nos idées. De plus, nous avions choisi de commencer par la table de hachage et l'arbre avant de récupérer les lettres du texte. Après cela, nous avons réalisé les fonctions de compression. \\ \\
@@ -57,7 +143,7 @@
   Nous avons choisi la fonction \texttt{Read\_write.header\_to\_tree}. \\
   Il s'agit de la fonction qui reconstruit l'arbre stocké au début du fichier compressé, en écriture préfixe. \\
   La fonction \texttt{aux} lit sur le stream et construit l'arbre. Elle est ainsi appelée pour les deux sous-arbres. \\
-  La fonction \texttt{aux1} permet de lire chacun des caractères du préfixe, en lisant 24 bits à la fois et stocke les chiffres significatifs du code binaire dans une liste par ordre croissant de poids. Par exemple, le bloc \texttt{000000000000000000011010} donnera \texttt{[0;1;0;1;1]}. \\
+  La fonction \texttt{aux1} permet de lire chacun des caractères du préfixe, en lisant 24 bits à la fois et stocke les chiffres significatifs du code binaire dans une liste par ordre croissant de poids. Par exemple, le bloc \texttt{000000000000000000011010} donnera \texttt{[ 0 ; 1 ; 0 ; 1 ; 1 ]}. \\
   La fonction \texttt{aux2} traduit cette écriture binaire en décimal. Ici, \texttt{[0;1;0;1;1]} donne \texttt{26}. \\
   Si cet entier vaut \texttt{31}, cela signifie que c'est un noeud interne, on appelle alors deux fois \texttt{aux} et l'on construit l'arbre à partir de ces deux renvois. \\
   Sinon, c'est une feuille, on renvoie la feuille avec comme valeur l'entier.
